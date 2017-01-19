@@ -1,1 +1,1 @@
-mkdir c:\itworked
+mkdir d:\itworked
