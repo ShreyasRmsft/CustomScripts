@@ -1,90 +1,96 @@
 {  
-    "apiVersion":"2015-06-15",
-    "copy":{  
-        "name":"vmCopy",
-        "count":"[parameters('vmCount')]"
-    },
-    "type":"Microsoft.Compute/virtualMachines",
-    "name":"[concat(variables('vmName'),copyIndex())]",
-    "location":"[resourceGroup().location]",
-    "dependsOn":[  
-        "[concat('Microsoft.Network/networkInterfaces/', concat(variables('nicName'), copyIndex()))]"
-    ],
-    "properties":{  
-        "hardwareProfile":{  
-            "vmSize":"[variables('vmSize')]"
-        },
-        "osProfile":{  
-            "computerName":"[concat(variables('vmName'),copyIndex())]",
-            "adminUsername":"[parameters('adminUsername')]",
-            "adminPassword":"[parameters('adminPassword')]"
-        },
-        "storageProfile":{  
-            "osDisk":{  
-                "name":"osdisk",
-                "vhd":{  
-                    "uri":"[concat(reference(resourceId(parameters('userImageStorageAccountResourceGroupName'), 'Microsoft.Storage/storageAccounts/', parameters('userImageStorageAccountName')), variables('apiVersion')).primaryEndpoints.blob, 'vhds/',variables('vmName'),copyIndex(), uniquestring(resourceGroup().id), 'osDisk.vhd')]"
-                },
-                "caching":"ReadWrite",
-                "osType":"Windows",
-                "caching":"ReadWrite",
-                "createOption":"FromImage",
-                "image":{  
-                    "uri":"[parameters('customImageVhdUri')]"
-                }
-            },
-            "dataDisks":[  
-                {  
-                    "name":"datadisk",
-                    "diskSizeGB":"[variables('sizeOfDiskInGB')]",
-                    "lun":0,
-                    "vhd":{  
-                        "uri":"[concat('http://',variables('storageAccountName'),'.blob.core.windows.net/',variables('vmStorageAccountContainerName'),'/', concat(variables('vmName'), copyIndex(), variables('dataDisk1VhdName')),'.vhd')]"
-                    },
-                    "createOption":"Empty"
-                }
-            ]
-        },
-        "networkProfile":{  
-            "networkInterfaces":[  
-                {  
-                    "id":"[resourceId('Microsoft.Network/networkInterfaces',concat(variables('nicName'), copyIndex()))]"
-                }
-            ]
-        }
-    },
+    "$schema":"https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion":"1.0.0.0",
     "resources":[  
         {  
-            "type":"Microsoft.Compute/virtualMachines/extensions",
-            "name":"[concat(variables('vmName'), copyIndex(),'/SeleniumGridSetupExtension')]",
-            "apiVersion":"[variables('apiVersion')]",
+            "apiVersion":"2015-06-15",
+            "copy":{  
+                "name":"vmCopy",
+                "count":"[parameters('vmCount')]"
+            },
+            "type":"Microsoft.Compute/virtualMachines",
+            "name":"[concat(variables('vmName'),copyIndex())]",
             "location":"[resourceGroup().location]",
             "dependsOn":[  
-                "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'), copyIndex())]",
-                "[concat('Microsoft.Network/networkInterfaces/', concat(variables('nicName'), copyIndex()))]",
-                "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'), 0)]",
-                "[concat('Microsoft.Network/networkInterfaces/', concat(variables('nicName'), 0))]"
+                "[concat('Microsoft.Network/networkInterfaces/', concat(variables('nicName'), copyIndex()))]"
             ],
             "properties":{  
-                "publisher":"Microsoft.Compute",
-                "type":"CustomScriptExtension",
-                "typeHandlerVersion":"1.8",
-                "autoUpgradeMinorVersion":true,
-                "settings":{  
-                    "fileUris":[  
-                        "[variables('seleniumServerStandaloneJarFile')]",
-                        "[variables('configFilesArray')[mod(copyIndex(2),copyIndex(1))]]",
-                        "https://storagehsm6ciz.blob.core.windows.net/mycustomscripts/GridDeployer.ps1",
-                        "https://storagehsm6ciz.blob.core.windows.net/mycustomscripts/GridDeployerUtility.ps1",
-                        "https://storagehsm6ciz.blob.core.windows.net/mycustomscripts/SeleniumGridSetupService.exe"
-                    ],
-                    "commandToExecute":"[concat('powershell -ExecutionPolicy Unrestricted -file GridDeployer.ps1 -seleniumGridJarFile ',variables('seleniumServerStandaloneJarFile'),' -hubMachineIP ',reference(concat(variables('nicName'), 0)).ipConfigurations[0].properties.privateIPAddress,' -vmNumber ',copyIndex(),' -configFile ',variables('configFilesArray')[mod(copyIndex(2),copyIndex(1))])]"
+                "hardwareProfile":{  
+                    "vmSize":"[variables('vmSize')]"
                 },
-                "protectedSettings":{  
-                    "storageAccountName":"storagehsm6ciz",
-                    "storageAccountKey":"RtYdJYi8XTZF3PoanI6X1kSDCdCdrPHAAKHfEDWSWLokYziXguz080MCD1ICnOfRB2aqOZoIST2nZj2m7DmgAg=="
+                "osProfile":{  
+                    "computerName":"[concat(variables('vmName'),copyIndex())]",
+                    "adminUsername":"[parameters('adminUsername')]",
+                    "adminPassword":"[parameters('adminPassword')]"
+                },
+                "storageProfile":{  
+                    "osDisk":{  
+                        "name":"osdisk",
+                        "vhd":{  
+                            "uri":"[concat(reference(resourceId(parameters('userImageStorageAccountResourceGroupName'), 'Microsoft.Storage/storageAccounts/', parameters('userImageStorageAccountName')), variables('apiVersion')).primaryEndpoints.blob, 'vhds/',variables('vmName'),copyIndex(), uniquestring(resourceGroup().id), 'osDisk.vhd')]"
+                        },
+                        "caching":"ReadWrite",
+                        "osType":"Windows",
+                        "caching":"ReadWrite",
+                        "createOption":"FromImage",
+                        "image":{  
+                            "uri":"[parameters('customImageVhdUri')]"
+                        }
+                    },
+                    "dataDisks":[  
+                        {  
+                            "name":"datadisk",
+                            "diskSizeGB":"[variables('sizeOfDiskInGB')]",
+                            "lun":0,
+                            "vhd":{  
+                                "uri":"[concat('http://',variables('storageAccountName'),'.blob.core.windows.net/',variables('vmStorageAccountContainerName'),'/', concat(variables('vmName'), copyIndex(), variables('dataDisk1VhdName')),'.vhd')]"
+                            },
+                            "createOption":"Empty"
+                        }
+                    ]
+                },
+                "networkProfile":{  
+                    "networkInterfaces":[  
+                        {  
+                            "id":"[resourceId('Microsoft.Network/networkInterfaces',concat(variables('nicName'), copyIndex()))]"
+                        }
+                    ]
                 }
-            }
+            },
+            "resources":[  
+                {  
+                    "type":"Microsoft.Compute/virtualMachines/extensions",
+                    "name":"[concat(variables('vmName'), copyIndex(),'/SeleniumGridSetupExtension')]",
+                    "apiVersion":"[variables('apiVersion')]",
+                    "location":"[resourceGroup().location]",
+                    "dependsOn":[  
+                        "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'), copyIndex())]",
+                        "[concat('Microsoft.Network/networkInterfaces/', concat(variables('nicName'), copyIndex()))]",
+                        "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'), 0)]",
+                        "[concat('Microsoft.Network/networkInterfaces/', concat(variables('nicName'), 0))]"
+                    ],
+                    "properties":{  
+                        "publisher":"Microsoft.Compute",
+                        "type":"CustomScriptExtension",
+                        "typeHandlerVersion":"1.8",
+                        "autoUpgradeMinorVersion":true,
+                        "settings":{  
+                            "fileUris":[  
+                                "[variables('seleniumServerStandaloneJarFile')]",
+                                "[variables('configFilesArray')[mod(copyIndex(2),copyIndex(1))]]",
+                                "https://storagehsm6ciz.blob.core.windows.net/mycustomscripts/GridDeployer.ps1",
+                                "https://storagehsm6ciz.blob.core.windows.net/mycustomscripts/GridDeployerUtility.ps1",
+                                "https://storagehsm6ciz.blob.core.windows.net/mycustomscripts/SeleniumGridSetupService.exe"
+                            ],
+                            "commandToExecute":"[concat('powershell -ExecutionPolicy Unrestricted -file GridDeployer.ps1 -seleniumGridJarFile ',variables('seleniumServerStandaloneJarFile'),' -hubMachineIP ',reference(concat(variables('nicName'), 0)).ipConfigurations[0].properties.privateIPAddress,' -vmNumber ',copyIndex(),' -configFile ',variables('configFilesArray')[mod(copyIndex(2),copyIndex(1))])]"
+                        },
+                        "protectedSettings":{  
+                            "storageAccountName":"storagehsm6ciz",
+                            "storageAccountKey":"RtYdJYi8XTZF3PoanI6X1kSDCdCdrPHAAKHfEDWSWLokYziXguz080MCD1ICnOfRB2aqOZoIST2nZj2m7DmgAg=="
+                        }
+                    }
+                }
+            ]
         }
     ]
 }
