@@ -1,117 +1,117 @@
-{
-  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-  "contentVersion": "1.0.0.0",
-  "parameters": {
-        "vmCount": {
-            "defaultValue": 2,
-            "type": "Int",
-            "metadata": {
-                "description": "1 + the number of Selenium Grid nodes you need."
+{  
+    "$schema":"https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion":"1.0.0.0",
+    "parameters":{  
+        "vmCount":{  
+            "defaultValue":2,
+            "type":"Int",
+            "metadata":{  
+                "description":"1 + the number of Selenium Grid nodes you need."
             }
         },
-        "adminUsername": {
-            "defaultValue": "seleniumgriduser",
-            "type": "String",
-            "metadata": {
-                "description": "User name for an administrator account on virtual machines."
+        "adminUsername":{  
+            "defaultValue":"seleniumgriduser",
+            "type":"String",
+            "metadata":{  
+                "description":"User name for an administrator account on virtual machines."
             }
         },
-        "adminPassword": {
-            "type": "SecureString",
-            "metadata": {
-                "description": "Password for the adminstrator account on Virtual Machines."
+        "adminPassword":{  
+            "type":"SecureString",
+            "metadata":{  
+                "description":"Password for the adminstrator account on Virtual Machines."
             }
         },
-        "userImageStorageAccountName": {
-            "type": "String",
-            "metadata": {
-                "description": "This is the name of the storage account where your custom image is present."
+        "userImageStorageAccountName":{  
+            "type":"String",
+            "metadata":{  
+                "description":"This is the name of the storage account where your custom image is present."
             }
         },
-        "userImageStorageAccountResourceGroupName": {
-            "type": "String",
-            "metadata": {
-                "description": "Resource group of the existing storage account where your custom image is present."
+        "userImageStorageAccountResourceGroupName":{  
+            "type":"String",
+            "metadata":{  
+                "description":"Resource group of the existing storage account where your custom image is present."
             }
         },
-        "customImageVhdUri": {
-            "type": "String",
-            "metadata": {
-                "description": "Uri of the your user image."
+        "customImageVhdUri":{  
+            "type":"String",
+            "metadata":{  
+                "description":"Uri of the your user image."
             }
         },
-        "osType": {
-            "allowedValues": [
+        "osType":{  
+            "allowedValues":[  
                 "Windows",
                 "Linux"
             ],
-            "type": "String",
-            "metadata": {
-                "description": "This is the OS that your VM will be running."
+            "type":"String",
+            "metadata":{  
+                "description":"This is the OS that your VM will be running."
             }
         },
-        "vmSize": {
-            "type": "String",
-            "metadata": {
-                "description": "This is the size of your VM."
+        "vmSize":{  
+            "type":"String",
+            "metadata":{  
+                "description":"This is the size of your VM."
             }
         },
-        "dnsLabelPrefix": {
-            "type": "String",
-            "metadata": {
-                "description": "This is the dns label prefix for the VMs."
+        "dnsLabelPrefix":{  
+            "type":"String",
+            "metadata":{  
+                "description":"This is the dns label prefix for the VMs."
             }
         },
-        "seleniumServerStandaloneJarFile": {
-            "defaultValue": "http://goo.gl/EoH85x",
-            "type": "String",
-            "metadata": {
-                "description": "Url of the Selenium Server Standalone jar file."
+        "seleniumServerStandaloneJarFile":{  
+            "defaultValue":"http://goo.gl/EoH85x",
+            "type":"String",
+            "metadata":{  
+                "description":"Url of the Selenium Server Standalone jar file."
             }
         },
-        "hubConfigJsonFile": {
-            "defaultValue": "https://storagehsm6ciz.blob.core.windows.net/mycustomscripts/blankhubconfig.json",
-            "type": "String",
-            "metadata": {
-                "description": "Url of the hub config json file."
+        "hubConfigJsonFile":{  
+            "defaultValue":"https://storagehsm6ciz.blob.core.windows.net/mycustomscripts/blankhubconfig.json",
+            "type":"String",
+            "metadata":{  
+                "description":"Url of the hub config json file."
             }
         },
-        "nodeConfigJsonFile": {
-            "defaultValue": "https://storagehsm6ciz.blob.core.windows.net/mycustomscripts/blanknodeconfig.json",
-            "type": "String",
-            "metadata": {
-                "description": "Url of the node config json file."
+        "nodeConfigJsonFile":{  
+            "defaultValue":"https://storagehsm6ciz.blob.core.windows.net/mycustomscripts/blanknodeconfig.json",
+            "type":"String",
+            "metadata":{  
+                "description":"Url of the node config json file."
             }
         }
     },
-    "variables": {
-        "sizeOfDiskInGB": "5",
-        "addressPrefix": "10.0.0.0/16",
-        "sequenceVersion": "[uniqueString(resourceGroup().id)]",
-        "uniqueStringValue": "[substring(variables('sequenceVersion'), 3, 7)]",
-        "subnetName": "Subnet",
-        "subnetPrefix": "10.0.0.0/24",
-        "storageAccountType": "Premium_LRS",
-        "vmName": "Node",
-        "vmSize": "[parameters('vmSize')]",
-        "storageAccountName": "[parameters('userImageStorageAccountName')]",
-        "vmStorageAccountContainerName": "vhds",
-        "virtualNetworkName": "seleniumgridvnet",
-        "publicIPAddressName": "[concat('publicip', variables('uniqueStringValue'))]",
-        "publicIPAddressType": "Dynamic",
-        "nicName": "[concat('nic', variables('uniqueStringValue'))]",
-        "dataDisk1VhdName": "datadisk",
-        "vnetID": "[resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]",
-        "subnetRef": "[concat(variables('vnetID'),'/subnets/',variables('subnetName'))]",
-        "apiVersion": "2015-06-15",
-        "seleniumServerStandaloneJarFile": "[parameters('seleniumServerStandaloneJarFile')]",
-        "configFilesArray": [
+    "variables":{  
+        "sizeOfDiskInGB":"5",
+        "addressPrefix":"10.0.0.0/16",
+        "sequenceVersion":"[uniqueString(resourceGroup().id)]",
+        "uniqueStringValue":"[substring(variables('sequenceVersion'), 3, 7)]",
+        "subnetName":"Subnet",
+        "subnetPrefix":"10.0.0.0/24",
+        "storageAccountType":"Premium_LRS",
+        "vmName":"Node",
+        "vmSize":"[parameters('vmSize')]",
+        "storageAccountName":"[parameters('userImageStorageAccountName')]",
+        "vmStorageAccountContainerName":"vhds",
+        "virtualNetworkName":"seleniumgridvnet",
+        "publicIPAddressName":"[concat('publicip', variables('uniqueStringValue'))]",
+        "publicIPAddressType":"Dynamic",
+        "nicName":"[concat('nic', variables('uniqueStringValue'))]",
+        "dataDisk1VhdName":"datadisk",
+        "vnetID":"[resourceId('Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]",
+        "subnetRef":"[concat(variables('vnetID'),'/subnets/',variables('subnetName'))]",
+        "apiVersion":"2015-06-15",
+        "seleniumServerStandaloneJarFile":"[parameters('seleniumServerStandaloneJarFile')]",
+        "configFilesArray":[  
             "[parameters('hubConfigJsonFile')]",
             "[parameters('nodeConfigJsonFile')]"
         ]
-   },
-  "resources": [
-      {  
+    },
+    "resources":[  
+        {  
             "apiVersion":"2015-06-15",
             "copy":{  
                 "name":"publicAddressCopy",
@@ -122,16 +122,67 @@
             "location":"[resourceGroup().location]",
             "properties":{  
                 "publicIPAllocationMethod":"[variables('publicIPAddressType')]",
-                "dnsSettings": {
-                    "domainNameLabel": "[concat(parameters('dnsLabelPrefix'),copyIndex())]"
+                "dnsSettings":{  
+                    "domainNameLabel":"[concat(parameters('dnsLabelPrefix'),copyIndex())]"
                 }
             }
+        },
+        {  
+            "apiVersion":"2015-06-15",
+            "type":"Microsoft.Network/virtualNetworks",
+            "name":"[variables('virtualNetworkName')]",
+            "location":"[resourceGroup().location]",
+            "properties":{  
+                "addressSpace":{  
+                    "addressPrefixes":[  
+                        "[variables('addressPrefix')]"
+                    ]
+                },
+                "subnets":[  
+                    {  
+                        "name":"[variables('subnetName')]",
+                        "properties":{  
+                            "addressPrefix":"[variables('subnetPrefix')]"
+                        }
+                    }
+                ]
+            }
+        },
+        {  
+            "apiVersion":"2015-06-15",
+            "copy":{  
+                "name":"nicCopy",
+                "count":"[parameters('vmCount')]"
+            },
+            "type":"Microsoft.Network/networkInterfaces",
+            "name":"[concat(variables('nicName'), copyIndex())]",
+            "location":"[resourceGroup().location]",
+            "dependsOn":[  
+                "[concat('Microsoft.Network/publicIPAddresses/', concat(variables('publicIPAddressName'), copyIndex()))]",
+                "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
+            ],
+            "properties":{  
+                "ipConfigurations":[  
+                    {  
+                        "name":"ipconfig1",
+                        "properties":{  
+                            "privateIPAllocationMethod":"Dynamic",
+                            "publicIPAddress":{  
+                                "id":"[resourceId('Microsoft.Network/publicIPAddresses',concat(variables('publicIPAddressName'), copyIndex()))]"
+                            },
+                            "subnet":{  
+                                "id":"[variables('subnetRef')]"
+                            }
+                        }
+                    }
+                ]
+            }
         }
-  ],
-  "outputs": {
-    "result": {
-        "value": "Hello World",
-        "type" : "string"
+    ],
+    "outputs":{  
+        "result":{  
+            "value":"Hello World",
+            "type":"string"
+        }
     }
-  }
 }
