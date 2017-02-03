@@ -84,9 +84,10 @@
             }
         },
         "loopnumber":{  
+            "defaultValue":0,
             "type":"Int",
             "metadata":{  
-                "description":"index of outer loop."
+                "description":"Outer loop index."
             }
         }
     },
