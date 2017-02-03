@@ -84,7 +84,7 @@
             }
         },
         "loopnumber":{  
-            "type":"String",
+            "type":"Int",
             "metadata":{  
                 "description":"index of outer loop."
             }
