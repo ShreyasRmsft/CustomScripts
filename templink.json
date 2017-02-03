@@ -83,7 +83,7 @@
                 "description":"Url of the node config json file."
             }
         },
-        "loopnumber":{  
+        "loopnumbers":{  
             "defaultValue":"0",
             "type":"String",
             "metadata":{  
@@ -116,7 +116,7 @@
             "[parameters('hubConfigJsonFile')]",
             "[parameters('nodeConfigJsonFile')]"
         ],
-        "loopnumber":"[parameters('loopnumber')]"
+        "loopnumber":"[parameters('loopnumbers')]"
     },
     "resources":[  
         {  
