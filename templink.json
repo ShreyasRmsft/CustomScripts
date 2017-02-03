@@ -3,7 +3,24 @@
   "contentVersion": "1.0.0.0",
   "parameters": {},
   "variables": {},
-  "resources": [],
+  "resources": [
+      {  
+            "apiVersion":"2015-06-15",
+            "copy":{  
+                "name":"publicAddressCopy",
+                "count":"[parameters('vmCount')]"
+            },
+            "type":"Microsoft.Network/publicIPAddresses",
+            "name":"[concat(variables('publicIPAddressName'), copyIndex())]",
+            "location":"[resourceGroup().location]",
+            "properties":{  
+                "publicIPAllocationMethod":"[variables('publicIPAddressType')]",
+                "dnsSettings": {
+                    "domainNameLabel": "[concat(parameters('dnsLabelPrefix'),copyIndex())]"
+                }
+            }
+        }
+  ],
   "outputs": {
     "result": {
         "value": "Hello World",
