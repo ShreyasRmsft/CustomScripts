@@ -135,11 +135,7 @@
                         }
                     }
                 ]
-            },
-            "dependsOn": [
-                "[concat('Microsoft.Network/publicIPAddresses/', concat(variables('publicIPAddressName'), copyIndex()))]",
-                "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
-            ]
+            }
         }
     ],
     "outputs":{  
