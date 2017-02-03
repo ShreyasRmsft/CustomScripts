@@ -111,27 +111,22 @@
         ]
     },
     "resources":[  
-        {
-            "type": "Microsoft.Network/networkInterfaces",
-            "name": "[concat(variables('nicName'), copyIndex())]",
-            "apiVersion": "2015-06-15",
-            "location": "[resourceGroup().location]",
-            "copy": {
-                "name": "nicCopy",
-                "count": "[parameters('vmCount')]"
-            },
-            "properties": {
-                "ipConfigurations": [
-                    {
-                        "name": "ipconfig1",
-                        "properties": {
-                            "privateIPAllocationMethod": "Dynamic",
-                            "publicIPAddress": {
-                                "id": "[resourceId('Microsoft.Network/publicIPAddresses',concat(variables('publicIPAddressName'), copyIndex()))]"
-                            },
-                            "subnet": {
-                                "id": "[variables('subnetRef')]"
-                            }
+        {  
+            "type":"Microsoft.Network/virtualNetworks",
+            "name":"[variables('virtualNetworkName')]",
+            "apiVersion":"2015-06-15",
+            "location":"[resourceGroup().location]",
+            "properties":{  
+                "addressSpace":{  
+                    "addressPrefixes":[  
+                        "[variables('addressPrefix')]"
+                    ]
+                },
+                "subnets":[  
+                    {  
+                        "name":"[variables('subnetName')]",
+                        "properties":{  
+                            "addressPrefix":"[variables('subnetPrefix')]"
                         }
                     }
                 ]
