@@ -123,9 +123,6 @@
             "type":"Microsoft.Compute/virtualMachines",
             "name":"[concat(variables('vmName'),variables('loopnumber'))]",
             "location":"[resourceGroup().location]",
-            "dependsOn":[  
-                "[concat('Microsoft.Network/networkInterfaces/', concat(variables('nicName'), variables('loopnumber')))]"
-            ],
             "properties":{  
                 "hardwareProfile":{  
                     "vmSize":"[variables('vmSize')]"
