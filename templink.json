@@ -111,73 +111,7 @@
         ]
     },
     "resources":[  
-        {  
-            "apiVersion":"2015-06-15",
-            "copy":{  
-                "name":"publicAddressCopy",
-                "count":"[parameters('vmCount')]"
-            },
-            "type":"Microsoft.Network/publicIPAddresses",
-            "name":"[concat(variables('publicIPAddressName'), copyIndex())]",
-            "location":"[resourceGroup().location]",
-            "properties":{  
-                "publicIPAllocationMethod":"[variables('publicIPAddressType')]",
-                "dnsSettings":{  
-                    "domainNameLabel":"[concat(parameters('dnsLabelPrefix'),copyIndex())]"
-                }
-            }
-        },
-        {  
-            "apiVersion":"2015-06-15",
-            "type":"Microsoft.Network/virtualNetworks",
-            "name":"[variables('virtualNetworkName')]",
-            "location":"[resourceGroup().location]",
-            "properties":{  
-                "addressSpace":{  
-                    "addressPrefixes":[  
-                        "[variables('addressPrefix')]"
-                    ]
-                },
-                "subnets":[  
-                    {  
-                        "name":"[variables('subnetName')]",
-                        "properties":{  
-                            "addressPrefix":"[variables('subnetPrefix')]"
-                        }
-                    }
-                ]
-            }
-        },
-        {  
-            "apiVersion":"2015-06-15",
-            "copy":{  
-                "name":"nicCopy",
-                "count":"[parameters('vmCount')]"
-            },
-            "type":"Microsoft.Network/networkInterfaces",
-            "name":"[concat(variables('nicName'), copyIndex())]",
-            "location":"[resourceGroup().location]",
-            "dependsOn":[  
-                "[concat('Microsoft.Network/publicIPAddresses/', concat(variables('publicIPAddressName'), copyIndex()))]",
-                "[concat('Microsoft.Network/virtualNetworks/', variables('virtualNetworkName'))]"
-            ],
-            "properties":{  
-                "ipConfigurations":[  
-                    {  
-                        "name":"ipconfig1",
-                        "properties":{  
-                            "privateIPAllocationMethod":"Dynamic",
-                            "publicIPAddress":{  
-                                "id":"[resourceId('Microsoft.Network/publicIPAddresses',concat(variables('publicIPAddressName'), copyIndex()))]"
-                            },
-                            "subnet":{  
-                                "id":"[variables('subnetRef')]"
-                            }
-                        }
-                    }
-                ]
-            }
-        }
+        
     ],
     "outputs":{  
         "result":{  
