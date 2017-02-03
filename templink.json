@@ -82,6 +82,9 @@
             "metadata":{  
                 "description":"Url of the node config json file."
             }
+        },
+        "loopnumber":{
+            "type":"String"
         }
     },
     "variables":{  
@@ -108,30 +111,61 @@
         "configFilesArray":[  
             "[parameters('hubConfigJsonFile')]",
             "[parameters('nodeConfigJsonFile')]"
-        ]
+        ],
+        "loopnumber":"[parameters('loopnumber')]"
     },
     "resources":[  
-        {  
-            "type":"Microsoft.Network/virtualNetworks",
-            "name":"[variables('virtualNetworkName')]",
-            "apiVersion":"2015-06-15",
-            "location":"[resourceGroup().location]",
-            "properties":{  
-                "addressSpace":{  
-                    "addressPrefixes":[  
-                        "[variables('addressPrefix')]"
-                    ]
+     {  
+        "apiVersion":"2015-06-15",
+        "type":"Microsoft.Compute/virtualMachines",
+        "name":"[concat(variables('vmName'),variables('loopnumber'))]",
+        "location":"[resourceGroup().location]",
+        "dependsOn":[  
+            "[concat('Microsoft.Network/networkInterfaces/', concat(variables('nicName'), variables('loopnumber')))]"
+        ],
+        "properties":{  
+            "hardwareProfile":{  
+                "vmSize":"[variables('vmSize')]"
+            },
+            "osProfile":{  
+                "computerName":"[concat(variables('vmName'),variables('loopnumber'))]",
+                "adminUsername":"[parameters('adminUsername')]",
+                "adminPassword":"[parameters('adminPassword')]"
+            },
+            "storageProfile":{  
+                "osDisk":{  
+                    "name":"osdisk",
+                    "vhd":{  
+                        "uri":"[concat(reference(resourceId(parameters('userImageStorageAccountResourceGroupName'), 'Microsoft.Storage/storageAccounts/', parameters('userImageStorageAccountName')), variables('apiVersion')).primaryEndpoints.blob, 'vhds/',variables('vmName'),variables('loopnumber'), uniquestring(resourceGroup().id), 'osDisk.vhd')]"
+                    },
+                    "caching":"ReadWrite",
+                    "osType":"Windows",
+                    "caching":"ReadWrite",
+                    "createOption":"FromImage",
+                    "image":{  
+                        "uri":"[parameters('customImageVhdUri')]"
+                    }
                 },
-                "subnets":[  
+                "dataDisks":[  
                     {  
-                        "name":"[variables('subnetName')]",
-                        "properties":{  
-                            "addressPrefix":"[variables('subnetPrefix')]"
-                        }
+                        "name":"datadisk",
+                        "diskSizeGB":"[variables('sizeOfDiskInGB')]",
+                        "lun":0,
+                        "vhd":{  
+                            "uri":"[concat('http://',variables('storageAccountName'),'.blob.core.windows.net/',variables('vmStorageAccountContainerName'),'/', concat(variables('vmName'), variables('loopnumber'), variables('dataDisk1VhdName')),'.vhd')]"
+                        },
+                        "createOption":"Empty"
+                    }
+                ]
+            },
+            "networkProfile":{  
+                "networkInterfaces":[  
+                    {  
+                        "id":"[resourceId('Microsoft.Network/networkInterfaces',concat(variables('nicName'), variables('loopnumber')))]"
                     }
                 ]
             }
-        }
+        },
     ],
     "outputs":{  
         "result":{  
