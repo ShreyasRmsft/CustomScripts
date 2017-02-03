@@ -1,0 +1,40 @@
+{  
+    "$schema":"https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion":"1.0.0.0",
+    "parameters":{},
+    "variables":{},
+    "resources": [
+	{
+	      "type": "Microsoft.Compute/virtualMachines/extensions",
+	      "name": "[concat(variables('vmName'), copyIndex(),'/SeleniumGridSetupExtension')]",
+	      "apiVersion": "[variables('apiVersion')]",
+	      "location": "[resourceGroup().location]",
+	      "dependsOn": [
+	          "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'), copyIndex())]",
+	          "[concat('Microsoft.Network/networkInterfaces/', concat(variables('nicName'), copyIndex()))]",
+	          "[concat('Microsoft.Compute/virtualMachines/', variables('vmName'), 0)]",
+	          "[concat('Microsoft.Network/networkInterfaces/', concat(variables('nicName'), 0))]"
+	      ],
+	      "properties": {
+	       "publisher": "Microsoft.Compute",
+	       "type": "CustomScriptExtension",
+	         "typeHandlerVersion": "1.8",
+	         "autoUpgradeMinorVersion": true,
+	         "settings": {
+	             "fileUris": [ 
+	                        "[variables('seleniumServerStandaloneJarFile')]",
+	                        "[variables('configFilesArray')[mod(copyIndex(2),copyIndex(1))]]",
+	                        "https://storagehsm6ciz.blob.core.windows.net/mycustomscripts/GridDeployer.ps1",
+	                        "https://storagehsm6ciz.blob.core.windows.net/mycustomscripts/GridDeployerUtility.ps1",
+	                        "https://storagehsm6ciz.blob.core.windows.net/mycustomscripts/SeleniumGridSetupService.exe"
+	                    ],
+	             "commandToExecute": "[concat('powershell -ExecutionPolicy Unrestricted -file GridDeployer.ps1 -seleniumGridJarFile ',variables('seleniumServerStandaloneJarFile'),' -hubMachineIP ',reference(concat(variables('nicName'), 0)).ipConfigurations[0].properties.privateIPAddress,' -vmNumber ',copyIndex(),' -configFile ',variables('configFilesArray')[mod(copyIndex(2),copyIndex(1))])]"
+	         },
+	         "protectedSettings": {
+	            "storageAccountName": "storagehsm6ciz",
+	            "storageAccountKey": "RtYdJYi8XTZF3PoanI6X1kSDCdCdrPHAAKHfEDWSWLokYziXguz080MCD1ICnOfRB2aqOZoIST2nZj2m7DmgAg=="
+	        }
+	     }
+	  }
+	]
+}
