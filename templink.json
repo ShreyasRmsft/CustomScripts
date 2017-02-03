@@ -84,8 +84,8 @@
             }
         },
         "loopnumber":{  
-            "defaultValue":0,
-            "type":"Int",
+            "defaultValue":"0",
+            "type":"String",
             "metadata":{  
                 "description":"Outer loop index."
             }
